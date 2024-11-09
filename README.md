@@ -9,3 +9,5 @@ Run EnsemL with AdaBoost or Bagged set as True to run corresponding tasks.
 Run RandomForest with Normal or Estimate True to run 2 (d) 2(e).
 
 Run GD.py or SGD.py to get results from HW2 4(a) 4(b) separately. Analytical form is also implemented in SGD.
+
+Run perceptron.py and variants with corresponding name in folder Perceptron for HW3.
