@@ -2,18 +2,15 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score
 
-# Load dataset
 train_data = pd.read_csv('bank-note/train.csv', header=None)
 test_data = pd.read_csv('bank-note/test.csv', header=None)
 
-# Convert labels to {1, -1}
 train_data.iloc[:, -1] = train_data.iloc[:, -1].apply(lambda x: 1 if x == 1 else -1)
 test_data.iloc[:, -1] = test_data.iloc[:, -1].apply(lambda x: 1 if x == 1 else -1)
 
 X_train, y_train = train_data.iloc[:, :-1].values, train_data.iloc[:, -1].values
 X_test, y_test = test_data.iloc[:, :-1].values, test_data.iloc[:, -1].values
 
-# Parameters
 T = 100  # Maximum epochs
 C_values = [100 / 873, 500 / 873, 700 / 873]
 gamma_0 = 0.1  # Initial learning rate
@@ -22,8 +19,8 @@ a = 1  # Hyperparameter for learning rate decay
 
 def svm_sgd(X, y, C, gamma_0, a, T):
     n_samples, n_features = X.shape
-    w = np.zeros(n_features)  # Initialize weights
-    b = 0  # Initialize bias
+    w = np.zeros(n_features)
+    b = 0
 
     # Track losses
     losses = []

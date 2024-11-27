@@ -67,29 +67,20 @@ for C in C_values:
         print("Optimization failed:", result.message)
         continue
 
-    # Retrieve optimized alpha
     alpha = result.x
 
-    # Compute weight vector w and bias b
     w, b = compute_w_b(alpha, X, y)
 
     print(f"Feature weights (w): {w}")
     print(f"Bias (b): {b}")
 
-    # Predictions on the training set
     predictions_train = np.sign(np.dot(X_train, w) + b)
     train_accuracy = np.mean(predictions_train == y_train)
     train_error = 1 - train_accuracy
 
-    # Predictions on the testing set
     predictions_test = np.sign(np.dot(X_test, w) + b)
     test_accuracy = np.mean(predictions_test == y_test)
     test_error = 1 - test_accuracy
 
     print(f"Training Error: {train_error:.2f}")
     print(f"Testing Error: {test_error:.2f}\n")
-
-    # Compare with primal domain results if available
-    # Uncomment and adjust the following lines if you have w_primal and b_primal
-    # print(f"Difference in weights: {np.linalg.norm(w - w_primal)}")
-    # print(f"Difference in bias: {abs(b - b_primal)}\n")

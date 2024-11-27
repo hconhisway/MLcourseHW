@@ -2,27 +2,22 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-# Load the training and testing data
 train_data = pd.read_csv('bank-note/train.csv')
 test_data = pd.read_csv('bank-note/test.csv')
 
-# Extract features and labels
 X_train = train_data.iloc[:, :-1].values  # Assuming the last column is the label
 y_train = train_data.iloc[:, -1].values
 
 X_test = test_data.iloc[:, :-1].values
 y_test = test_data.iloc[:, -1].values
 
-# Ensure that labels are in {-1, 1}
 y_train = np.where(y_train == 0, -1, y_train)
 y_test = np.where(y_test == 0, -1, y_test)
 
-# Constants
 C_values = [100 / 873, 500 / 873, 700 / 873]
 gamma_values = [0.1, 0.5, 1, 5, 100]  # Hyperparameter for Gaussian kernel
 
 
-# Define the Gaussian kernel function
 def gaussian_kernel(x1, x2, gamma):
     return np.exp(-np.linalg.norm(x1 - x2) ** 2 / gamma)
 
@@ -48,11 +43,10 @@ def zero_fun(alpha, y):
     return np.dot(alpha, y)
 
 
-# Main loop for different combinations of gamma and C
 results = []
 for gamma in gamma_values:
     print(f"Using gamma = {gamma}")
-    K = compute_kernel_matrix(X_train, gamma)  # Compute kernel matrix for the current gamma
+    K = compute_kernel_matrix(X_train, gamma)
 
     for C in C_values:
         print(f"  Running dual SVM for C = {C}")
@@ -81,10 +75,8 @@ for gamma in gamma_values:
             print("    Optimization failed:", result.message)
             continue
 
-        # Retrieve optimized alpha
         alpha = result.x
 
-        # Support vectors and bias calculation
         sv = alpha > 1e-5
         b_candidates = y[sv] - np.sum((alpha * y)[:, None] * K[:, sv], axis=0)
         b = np.mean(b_candidates)
@@ -94,12 +86,10 @@ for gamma in gamma_values:
         train_accuracy = np.mean(train_predictions == y_train)
         train_error = 1 - train_accuracy
 
-        # Compute kernel for test set
-        # Compute kernel for test set
         K_test = np.array(
             [[gaussian_kernel(x, x_train, gamma) for x_train in X_train] for x in X_test])  # Shape: (M, N)
 
-        # Predictions
+
         test_predictions = np.sign(np.dot(K_test, alpha * y) + b)  # Fix broadcasting by using dot product
 
         test_accuracy = np.mean(test_predictions == y_test)
@@ -108,5 +98,4 @@ for gamma in gamma_values:
         print(f"Training Error: {train_error:.2f}")
         print(f"Testing Error: {test_error:.2f}\n")
 
-        # Append results
         results.append((gamma, C, train_error, test_error))
